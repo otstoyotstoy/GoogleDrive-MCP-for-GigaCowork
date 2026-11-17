@@ -1,0 +1,15 @@
+[Unit]
+Description=Google Drive MCP server
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/opt/gdrive-mcp
+EnvironmentFile=/opt/gdrive-mcp/.env
+ExecStart=/opt/gdrive-mcp/venv/bin/python /opt/gdrive-mcp/server.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
