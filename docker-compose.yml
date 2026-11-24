@@ -3,8 +3,10 @@ services:
     build: .
     restart: unless-stopped
     env_file: .env
+    environment:
+      MCP_HOST: 0.0.0.0
     ports:
       - "127.0.0.1:8000:8000"
-    # Для сервисного аккаунта из файла:
-    # volumes:
-    #   - ./service-account.json:/app/service-account.json:ro
+    volumes:
+      - ./data:/app/data     # токен Google — переживает пересборку контейнера
+      - ./logs:/app/logs     # журнал изменений

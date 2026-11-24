@@ -1,8 +1,10 @@
 .env
 *.json
 !package.json
+token.json
+logs/
 __pycache__/
+.pytest_cache/
 .venv/
 venv/
 *.pyc
-token.json
