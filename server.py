@@ -48,7 +48,7 @@ from mcp.types import ToolAnnotations  # noqa: E402
 import safety  # noqa: E402
 from safety import Blocked, audit, confirmation_required, needs_confirmation, require_write  # noqa: E402
 
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 
 # ===================== КОНФИГУРАЦИЯ =====================
 

@@ -87,7 +87,7 @@ sudo useradd -r -m -d /opt/gdrive-mcp gdrive-mcp
 sudo -u gdrive-mcp git clone https://github.com/otstoyotstoy/GoogleDrive-MCP-for-GigaCowork.git /opt/gdrive-mcp/app
 cd /opt/gdrive-mcp/app
 sudo -u gdrive-mcp python3 -m venv venv
-sudo -u gdrive-mcp venv/bin/pip install -r requirements.lock
+sudo -u gdrive-mcp venv/bin/pip install -r requirements.lock -r requirements-dev.txt
 sudo -u gdrive-mcp venv/bin/python -m pytest -q tests      # должно быть: all passed
 sudo -u gdrive-mcp cp .env.example .env && sudo -u gdrive-mcp nano .env
 sudo chmod 600 .env
@@ -106,8 +106,10 @@ nginx + HTTPS: `deploy/nginx.conf` (замените домен) → `sudo certb
 ### Вариант B: Docker
 
 ```bash
-cp .env.example .env && nano .env
+cp .env.example .env && nano .env          # MCP_HOST оставьте как есть — в контейнере он переопределён
+mkdir -p data logs && sudo chown -R 10001:10001 data logs   # контейнер работает не от root — дайте ему право писать токен и журнал
 docker compose up -d --build
+curl http://127.0.0.1:8000/health
 ```
 Токен Google хранится в `./data`, журнал — в `./logs` (не теряются при пересборке).
 
@@ -142,7 +144,7 @@ docker compose up -d --build
 
 ## 4. Проверка после запуска (5 минут)
 
-1. `curl https://<домен>/health` → `{"status":"ok","version":"2.0.0"}`.
+1. `curl https://<домен>/health` → `{"status":"ok","version":"2.0.1"}`.
 2. Без токена `https://<домен>/mcp` → `401`.
 3. В платформе: «покажи информацию о моём Google Диске» → в ответе `safety_settings` совпадают с задуманными.
 4. «Найди файлы со словом …» → список файлов.
@@ -199,7 +201,7 @@ cd /opt/gdrive-mcp/app
 git fetch && git log --oneline HEAD..origin/main      # что изменилось
 cp -a . ../app-backup-$(date +%F)                      # резервная копия текущей версии вместе с .env и token.json
 git pull
-venv/bin/pip install -r requirements.lock
+venv/bin/pip install -r requirements.lock -r requirements-dev.txt
 venv/bin/python -m pytest -q tests                      # только если all passed — продолжаем
 sudo systemctl restart gdrive-mcp && curl http://127.0.0.1:8000/health
 ```
@@ -213,7 +215,7 @@ sudo systemctl restart gdrive-mcp && curl http://127.0.0.1:8000/health
 ## Тесты
 
 ```bash
-pip install -r requirements.lock pytest httpx
+pip install -r requirements.lock -r requirements-dev.txt
 python -m pytest -q tests
 ```
 
